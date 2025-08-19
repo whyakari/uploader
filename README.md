@@ -1,3 +1,3 @@
 # moe uploader
 
-./moe <device>
+`./moe <device>`
