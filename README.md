@@ -2,10 +2,15 @@
 
 `./moe <device>`
 
-### for example:
+### path device:
 ```sh
-out/target/product/{device}
+out/target/product/fogos
 ```
+
+### get moe
+``` wget https://raw.githubusercontent.com/whyakari/uploader/main/moe && chmod +x moe && ./moe fogos```
+
+> device is named `fogos`
 
 # Features
 - dtbo
