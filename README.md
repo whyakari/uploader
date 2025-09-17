@@ -1,16 +1,13 @@
 # moe uploader
 
 `./moe <device>`
-
-### path device:
+> just enter the name of the device.
 ```sh
-out/target/product/fogos
+out/target/product/{device}
 ```
 
 ### get moe
-``` wget https://raw.githubusercontent.com/whyakari/uploader/main/moe && chmod +x moe && ./moe fogos```
-
-> device is named `fogos`
+``` wget https://raw.githubusercontent.com/whyakari/uploader/main/moe && chmod +x moe && ./moe {device}```
 
 # Features
 - dtbo
