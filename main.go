@@ -1,6 +1,7 @@
 package main
 
 import (
+    "bufio"
     "bytes"
     "fmt"
     "log"
@@ -62,11 +63,23 @@ func main() {
         var out bytes.Buffer
         cmd.Stdout = &out
         cmd.Stderr = os.Stderr
+
         if err := cmd.Run(); err != nil {
             fmt.Printf("[ERRO] Failed to send %s: %v\n", label, err)
             continue
         }
-        link := strings.TrimSpace(out.String())
+
+        scanner := bufio.NewScanner(&out)
+        var filteredOutput strings.Builder
+        for scanner.Scan() {
+            line := scanner.Text()
+            if strings.Contains(strings.ToLower(line), "uploading") || strings.Contains(strings.ToLower(line), "md5") {
+                continue
+            }
+            filteredOutput.WriteString(line + "\n")
+        }
+
+        link := strings.TrimSpace(filteredOutput.String())
         links[label] = link
     }
 
