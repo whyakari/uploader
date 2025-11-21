@@ -8,6 +8,7 @@ import (
     "os"
     "os/exec"
     "path/filepath"
+    "sort"
     "strings"
 )
 
@@ -30,8 +31,40 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
+
     if len(zips) > 0 {
-        files["ROM Zip"] = zips[0]
+        type zipInfo struct {
+            path string
+            ts   int64
+        }
+
+        var parsed []zipInfo
+
+        for _, z := range zips {
+            base := filepath.Base(z)
+
+            parts := strings.Split(base, "-")
+            if len(parts) < 3 {
+                continue
+            }
+
+            date := parts[len(parts)-2]
+            time := strings.TrimSuffix(parts[len(parts)-1], ".zip")
+
+            tsStr := date + time
+            var ts int64
+            fmt.Sscanf(tsStr, "%d", &ts)
+
+            parsed = append(parsed, zipInfo{path: z, ts: ts})
+        }
+
+        if len(parsed) > 0 {
+            sort.Slice(parsed, func(i, j int) bool {
+                return parsed[i].ts > parsed[j].ts
+            })
+
+            files["ROM Zip"] = parsed[0].path
+        }
     }
 
     if _, err := os.Stat("./go-up"); os.IsNotExist(err) {
@@ -73,7 +106,8 @@ func main() {
         var filteredOutput strings.Builder
         for scanner.Scan() {
             line := scanner.Text()
-            if strings.Contains(strings.ToLower(line), "uploading") || strings.Contains(strings.ToLower(line), "md5") {
+            l := strings.ToLower(line)
+            if strings.Contains(l, "uploading") || strings.Contains(l, "md5") {
                 continue
             }
             filteredOutput.WriteString(line + "\n")
